@@ -1,0 +1,139 @@
+---
+title: "Multiple Lineare Regression"
+subtitle: "Hauspreise vorhersagen mit Machine Learning"
+author: "Tim, Jonas"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    show-notes: false
+    width: 1280
+    height: 720
+    scrollable: true
+    code-line-numbers: true
+    highlight-style: github
+    footer: "Theorie - Anwendung - Demo | Multiple Lineare Regression"
+execute:
+  echo: true
+  eval: false
+lang: de
+---
+
+## Agenda: Die 3 Säulen
+
+1.  **Theorie & Logik:** Wie "denkt" das Modell?
+2.  **Anwendungsgebiete:** Woher kommen die Daten?
+3.  **Live-Coding:** Umsetzung in Scikit-Learn
+
+---
+
+## 1. Theorie: Wie "denkt" der Algorithmus?
+
+Stellt euch das Modell wie ein **Mischpult** vor:
+
+* **Das Ziel:** Den perfekten Sound (den Hauspreis) finden.
+* **Die Regler:** Jeder Einflussfaktor (Fläche, Alter, Lage) ist ein Schieberegler.
+* **Die Gewichtung ($\beta$):** Der Algorithmus lernt, wie empfindlich der Preis auf jeden Regler reagiert. 
+    * *Regler Fläche hoch* $\rightarrow$ Preis geht stark rauf.
+    * *Regler Alter hoch* $\rightarrow$ Preis geht leicht runter.
+
+::: {.notes}
+Erklärung: Das Modell schaut sich tausende vergangene Verkäufe an. Es probiert so lange an den Reglern herum, bis die berechneten Preise so nah wie möglich an den echten Preisen liegen. Das nennt man "Lernen".
+:::
+
+---
+
+## Die Logik: Der "Best Fit"
+
+Statt nur einer Linie (einfache Regression) legen wir eine **Ebene** durch eine Punktwolke.
+
+
+
+* **Der Fehler ($\varepsilon$):** Kein Modell ist perfekt. Der Abstand zwischen einem echten Punkt und unserer Ebene ist der Fehler.
+* **Das Ziel:** Die Summe dieser Abstände so klein wie möglich zu halten (**Kleinste-Quadrate-Methode**).
+
+::: {.notes}
+Visualisierung: Stellt euch vor, die Datenpunkte schweben im Raum wie Glühwürmchen. Unser Algorithmus versucht, ein Blatt Papier so in den Raum zu legen, dass es im Durchschnitt so nah wie möglich an allen Glühwürmchen gleichzeitig ist.
+:::
+
+---
+
+## Deep Dive: Wie lernt das Modell wirklich? {.smaller}
+
+Hinter den Kulissen passiert ein Prozess namens **Residualminimierung**:
+
+1.  **Initialisierung:** Das Modell startet mit zufälligen Werten für alle Regler ($\beta$).
+2.  **Vorhersage:** Es berechnet Preise für alle Häuser im Trainingsset.
+3.  **Fehlerberechnung:** Das Modell misst den Abstand zwischen Vorhersage und echtem Preis (das **Residuum**).
+4.  **Optimierung:** Mit dem **Gradientenverfahren** (Gradient Descent) passt es die Regler so an, dass die Summe der quadrierten Fehler minimal wird.
+
+
+
+::: {.callout-important}
+### Das Ziel: "Least Squares"
+Wir minimieren $\sum (y_{echt} - \hat{y}_{vorhersage})^2$. Quadriert wird deshalb, damit sich positive und negative Abweichungen nicht gegenseitig aufheben und große Fehler stärker bestraft werden.
+:::
+
+::: {.notes}
+Erklärt das so: "Das Modell ist wie ein Bogenschütze. Am Anfang schießt er wild daneben. Nach jedem Schuss schaut er, wie weit er vom Ziel (dem echten Preis) entfernt war und korrigiert seine Haltung für den nächsten Schuss, bis er das Zentrum der Datenwolke trifft."
+:::
+
+---
+
+## 2. Anwendungsgebiete: Echte Welt
+
+Wo wird diese Logik heute eingesetzt?
+
+| Bereich | Zielvariable ($y$) | Einflussfaktoren ($x_n$) |
+|---------|-------------------|--------------------------|
+| **Immobilien** | Marktpreis | Lage, Baujahr, Energieklasse |
+| **Marketing** | Sales-Umsatz | Werbebudget (TV, Social Media, Radio) |
+| **Finanzen** | Kreditwürdigkeit | Einkommen, Alter, bestehende Schulden |
+| **Medizin** | Blutdruck | BMI, Salzkonsum, Stresslevel |
+
+---
+
+## 3. Demo: Vorbereitung & Training {.smaller}
+
+Wir nutzen den klassischen `Housing`-Datensatz.
+
+```python
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+# 1. Daten laden (Beispiel-Features)
+X = data[['area', 'bedrooms', 'age']] 
+y = data['price']
+
+# 2. Split in Training (Lernen) und Test (Prüfen)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# 3. Das Gehirn des Modells trainieren
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+---
+
+## Vielen Dank für eure Aufmerksamkeit! {background-color="#1a1a2e"}
+
+::: {.columns}
+::: {.column width="60%"}
+### Zeit für Fragen
+* Was passiert bei 100 Variablen?
+* Wie gehen wir mit Ausreißern um?
+* ... oder was euch sonst interessiert!
+:::
+
+::: {.column width="40%"}
+**Gruppe:** [Namen]  
+**Kurs:** Statistik & ML  
+**Datum:** 2026
+:::
+:::
+
+::: {.notes}
+Abschluss: Bedankt euch kurz und schaut in die Runde. Falls keine Fragen kommen, könnt ihr selbst eine stellen: "Glaubt ihr, dass die Lage oder die Fläche wichtiger für den Preis ist?"
+:::
