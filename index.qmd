@@ -23,7 +23,7 @@ lang: de
 
 1.  **Theorie & Logik:** Wie "denkt" das Modell?
 2.  **Anwendungsgebiete:** Woher kommen die Daten?
-3.  **Live-Coding:** Umsetzung in Scikit-Learn
+3.  **Demo**
 
 ---
 
@@ -31,58 +31,55 @@ lang: de
 
 Stellt euch das Modell wie ein **Mischpult** vor:
 
-* **Das Ziel:** Den perfekten Sound (den Hauspreis) finden.
-* **Die Regler:** Jeder Einflussfaktor (Fläche, Alter, Lage) ist ein Schieberegler.
-* **Die Gewichtung ($\beta$):** Der Algorithmus lernt, wie empfindlich der Preis auf jeden Regler reagiert. 
-    * *Regler Fläche hoch* $\rightarrow$ Preis geht stark rauf.
-    * *Regler Alter hoch* $\rightarrow$ Preis geht leicht runter.
+* **Das Ziel:** Den perfekten Sound – also den Hauspreis – treffen.
+* **Die Regler:** Jeder Einflussfaktor wie Fläche, Alter oder Lage ist ein eigener Schieberegler.
+* **Die Gewichtung ($\beta$):** Das Modell lernt, wie stark der Preis auf jeden Regler reagiert.
+    * *Regler Fläche rauf* → Preis steigt deutlich.
+    * *Regler Alter rauf* → Preis fällt leicht.
 
 ::: {.notes}
-Erklärung: Das Modell schaut sich tausende vergangene Verkäufe an. Es probiert so lange an den Reglern herum, bis die berechneten Preise so nah wie möglich an den echten Preisen liegen. Das nennt man "Lernen".
+Erklärung: Das Modell schaut sich tausende vergangene Verkäufe an und probiert so lange an den Reglern herum, bis die berechneten Preise so nah wie möglich an den echten liegen. Genau das nennen wir "Lernen".
 :::
 
 ---
 
 ## Die Logik: Der "Best Fit"
 
-Statt nur einer Linie (einfache Regression) legen wir eine **Ebene** durch eine Punktwolke.
+Statt einer einfachen Linie legen wir eine **Ebene** durch eine ganze Punktwolke.
 
+$$y_t = x_{t1}\beta_1 + x_{t2}\beta_2 + \ldots + x_{tK}\beta_K + \varepsilon_t$$
 
-
-* **Der Fehler ($\varepsilon$):** Kein Modell ist perfekt. Der Abstand zwischen einem echten Punkt und unserer Ebene ist der Fehler.
-* **Das Ziel:** Die Summe dieser Abstände so klein wie möglich zu halten (**Kleinste-Quadrate-Methode**).
+* **Der Fehler ($\varepsilon$):** Kein Modell trifft es perfekt. Der Abstand zwischen einem echten Datenpunkt und unserer Ebene ist der sogenannte Fehler.
+* **Das Ziel:** Diese Abstände insgesamt so klein wie möglich zu halten – das ist die **Kleinste-Quadrate-Methode**.
 
 ::: {.notes}
-Visualisierung: Stellt euch vor, die Datenpunkte schweben im Raum wie Glühwürmchen. Unser Algorithmus versucht, ein Blatt Papier so in den Raum zu legen, dass es im Durchschnitt so nah wie möglich an allen Glühwürmchen gleichzeitig ist.
+Visualisierung: Stellt euch vor, die Datenpunkte schweben im Raum wie Glühwürmchen. Unser Algorithmus versucht, ein Blatt Papier so hineinzulegen, dass es im Durchschnitt möglichst nah an allen Punkten gleichzeitig ist.
 :::
-
 ---
 
 ## Deep Dive: Wie lernt das Modell wirklich? {.smaller}
 
-Hinter den Kulissen passiert ein Prozess namens **Residualminimierung**:
+Hinter den Kulissen läuft ein Prozess namens **Residualminimierung** ab:
 
-1.  **Initialisierung:** Das Modell startet mit zufälligen Werten für alle Regler ($\beta$).
+1.  **Start:** Das Modell beginnt mit zufälligen Werten für alle Regler ($\beta$) – es weiß anfangs noch gar nichts.
 2.  **Vorhersage:** Es berechnet Preise für alle Häuser im Trainingsset.
-3.  **Fehlerberechnung:** Das Modell misst den Abstand zwischen Vorhersage und echtem Preis (das **Residuum**).
-4.  **Optimierung:** Mit dem **Gradientenverfahren** (Gradient Descent) passt es die Regler so an, dass die Summe der quadrierten Fehler minimal wird.
-
-
+3.  **Fehler messen:** Das Modell schaut, wie weit seine Vorhersage vom echten Preis entfernt ist (das **Residuum**).
+4.  **Korrigieren:** Mit dem **Gradientenverfahren** (Gradient Descent) dreht es an den Reglern, bis der Gesamtfehler möglichst klein wird.
 
 ::: {.callout-important}
 ### Das Ziel: "Least Squares"
-Wir minimieren $\sum (y_{echt} - \hat{y}_{vorhersage})^2$. Quadriert wird deshalb, damit sich positive und negative Abweichungen nicht gegenseitig aufheben und große Fehler stärker bestraft werden.
+Wir minimieren $\sum (y_{echt} - \hat{y}_{vorhersage})^2$. Quadriert wird deshalb, damit positive und negative Abweichungen sich nicht aufheben – und damit große Fehler stärker ins Gewicht fallen.
 :::
 
 ::: {.notes}
-Erklärt das so: "Das Modell ist wie ein Bogenschütze. Am Anfang schießt er wild daneben. Nach jedem Schuss schaut er, wie weit er vom Ziel (dem echten Preis) entfernt war und korrigiert seine Haltung für den nächsten Schuss, bis er das Zentrum der Datenwolke trifft."
+Vergleich: Das Modell ist wie ein Bogenschütze. Anfangs schießt er wild daneben. Nach jedem Schuss schaut er, wie weit er vom Ziel war, und korrigiert seine Haltung – so lange, bis er die Mitte der Datenwolke trifft.
 :::
 
 ---
 
 ## 2. Anwendungsgebiete: Echte Welt
 
-Wo wird diese Logik heute eingesetzt?
+Wo begegnet uns diese Logik im Alltag?
 
 | Bereich | Zielvariable ($y$) | Einflussfaktoren ($x_n$) |
 |---------|-------------------|--------------------------|
@@ -95,45 +92,29 @@ Wo wird diese Logik heute eingesetzt?
 
 ## 3. Demo: Vorbereitung & Training {.smaller}
 
-Wir nutzen den klassischen `Housing`-Datensatz.
+Wir arbeiten mit dem klassischen `Housing`-Datensatz.
 
 ```python
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 
-# 1. Daten laden (Beispiel-Features)
-X = data[['area', 'bedrooms', 'age']] 
-y = data['price']
+# Daten einlesen
+df = pd.read_csv('hauspreise.csv')
+print(df.head())
 
-# 2. Split in Training (Lernen) und Test (Prüfen)
+X = df[['flaeche', 'alter', 'lage']] # Ausgansparameter 
+y = df['preis']  # Zielparameter
+
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
 
-# 3. Das Gehirn des Modells trainieren
+# Modell trainieren
 model = LinearRegression()
 model.fit(X_train, y_train)
+```
 
----
-
-## Vielen Dank für eure Aufmerksamkeit! {background-color="#1a1a2e"}
-
-::: {.columns}
-::: {.column width="60%"}
-### Zeit für Fragen
-* Was passiert bei 100 Variablen?
-* Wie gehen wir mit Ausreißern um?
-* ... oder was euch sonst interessiert!
-:::
-
-::: {.column width="40%"}
-**Gruppe:** [Namen]  
-**Kurs:** Statistik & ML  
-**Datum:** 2026
-:::
-:::
-
-::: {.notes}
-Abschluss: Bedankt euch kurz und schaut in die Runde. Falls keine Fragen kommen, könnt ihr selbst eine stellen: "Glaubt ihr, dass die Lage oder die Fläche wichtiger für den Preis ist?"
+::: {.slide background-color="#1a1a2e" style="text-align: center; color: white;"}
+# Vielen Dank für eure Aufmerksamkeit!
 :::
